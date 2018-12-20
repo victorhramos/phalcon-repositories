@@ -99,6 +99,28 @@ class AbstractRepository implements RepositoryInterface
 
         return $model;
     }
+    
+    /**
+     * Return the first record querying input parameters.
+     * Return new instance of model if no record is found.
+     *
+     * @param  array $where
+     *
+     * @return \Phalcon\Mvc\Model|false
+     */
+    public function firstOrNew(array $where = [])
+    {
+        $query = $this->model->query();
+        $model = $this->applyWhere($query, $where)->limit(1)->execute()->getFirst();
+        
+        if (!$model) {
+            $classname = get_class($this->model);
+            
+            return new $classname;
+        }
+        
+        return $model;
+    }
 
     /**
      * Return the first record querying input parameters.
